@@ -14,17 +14,29 @@ return {
       -- - The `ensure_installed` list works with mason-lspconfig to resolve LSP names like "lua_ls".
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
+      -- NOTE: replace by noice.lua
       -- Useful status updates for LSP.
-      {
-         'j-hui/fidget.nvim',
-         opts = {
-            notification = {
-               window = {
-                  winblend = 0, -- Background color opacity in the notification window
-               },
-            },
-         },
-      },
+      -- {
+      --    'j-hui/fidget.nvim',
+      --    opts = {
+      --       notification = {
+      --          window = {
+      --             normal_hl = 'Comment', -- Base highlight group in the notification window
+      --             winblend = 0, -- Background color opacity in the notification window
+      --             border = 'rounded', -- Border around the notification window
+      --             zindex = 45, -- Stacking priority of the notification window
+      --             max_width = 0, -- Maximum width of the notification window
+      --             max_height = 0, -- Maximum height of the notification window
+      --             x_padding = 1, -- Padding from right edge of window boundary
+      --             y_padding = 0, -- Padding from bottom edge of window boundary
+      --             align = 'top', -- How to align the notification window
+      --             relative = 'editor', -- What the notification window position is relative to
+      --             tabstop = 8, -- Width of each tab character
+      --             -- winblend = 0, -- Background color opacity in the notification window
+      --          },
+      --       },
+      --    },
+      -- },
 
       -- Allows extra capabilities provided by nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
@@ -131,6 +143,7 @@ return {
       -- - settings (table): Override the default settings passed when initializing the server.
       local servers = {
          ts_ls = {},
+         clangd = {},
          ruff = {},
          pylsp = {
             settings = {
@@ -167,7 +180,7 @@ return {
                   },
                   diagnostics = {
                      globals = { 'vim' },
-                     disable = { 'missing-fields' },
+                     disable = { 'missing-fields', 'undefined-field' },
                   },
                   format = {
                      enable = false,

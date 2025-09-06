@@ -30,7 +30,10 @@ require('lazy').setup {
    require 'plugins.misc',
    require 'plugins.comment',
    require 'plugins.debug',
+   require 'plugins.compiler',
    require 'plugins.markdown',
+   require 'plugins.noice',
+   require 'plugins.symbol-usage',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`

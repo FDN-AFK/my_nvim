@@ -28,6 +28,15 @@ return {
    },
    config = function()
       require('neo-tree').setup {
+         -- Close Neotree when we open a file
+         event_handlers = {
+            {
+               event = 'file_opened',
+               handler = function()
+                  require('neo-tree.command').execute { action = 'close' }
+               end,
+            },
+         },
          close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
          popup_border_style = 'rounded',
          enable_git_status = true,
@@ -42,7 +51,7 @@ return {
          --       else
          --           return a.type > b.type
          --       end
-         --   end , -- this sorts files and directories descendantly
+         --   end , -- this sorts files and directories descendant
          default_component_configs = {
             container = {
                enable_character_fade = true,
@@ -303,7 +312,7 @@ return {
       }
 
       -- vim.cmd [[nnoremap \ :Neotree reveal<cr>]]
-      vim.keymap.set('n', '\\', '<cmd> Neotree reveal<CR>', { noremap = true, silent = true }) -- open neo-tree window
+      vim.keymap.set('n', '<leader>e', '<cmd> Neotree reveal<CR>', { noremap = true, silent = true }) -- open neo-tree window
       vim.keymap.set('n', '<leader>ngs', ':Neotree float git_status<CR>', { noremap = true, silent = true }) -- open git status window
    end,
 }

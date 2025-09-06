@@ -28,7 +28,7 @@ return {
             right_trunc_marker = '',
             max_name_length = 30,
             max_prefix_length = 30, -- prefix used when a buffer is de-duplicated
-            tab_size = 21,
+            tab_size = 20,
             diagnostics = false,
             diagnostics_update_in_insert = false,
             color_icons = true,
@@ -50,23 +50,19 @@ return {
             maximum_length = 15,
             sort_by = 'insert_at_end',
          },
-         -- highlights = require('catppuccin.groups.integrations.bufferline').get_theme {
-         highlights = {
-            fill = { bg = '#000000' },
-            separator = {
-               fg = '#434C5E',
-            },
-            buffer_selected = {
-               bold = true,
-               italic = false,
-            },
+         -- highlights = {
+         --separator = {
+         --   fg = '#434C5E',
+         --},
 
-            -- separator_selected = {},
-            -- tab_selected = {},
-            -- background = {},
-            -- indicator_selected = {},
-         },
+         -- buffer_selected = {},
+         -- fill = {},
+         -- separator_selected = {},
+         -- tab_selected = {},
+         -- background = {},
+         -- indicator_selected = {},
+         -- },
       }
-      vim.cmd [[highlight BufferLineOffset guibg=#000000 guifg=#61AFEF]]
+      vim.cmd [[highlight BufferLineOffset guibg=#0e0e14 guifg=#61AFEF]]
    end,
 }

@@ -9,9 +9,9 @@ return {
       'williamboman/mason.nvim',
       'jay-babu/mason-nvim-dap.nvim',
 
-      -- Add your own debuggers here
-      'leoluz/nvim-dap-go',
+      -- NOTE: Add your own debuggers here
       'mfussenegger/nvim-dap-python',
+      -- 'mrcjkb/rustaceanvim',
    },
    config = function()
       local dap = require 'dap'
@@ -27,31 +27,26 @@ return {
          -- see mason-nvim-dap README for more information
          handlers = {},
 
-         -- You'll need to check that you have the required things installed
-         -- online, please don't ask me how to install them :)
+         -- NOTE: check the required install online along with Mason debuggers
          ensure_installed = {
-            -- Update this to ensure that you have the debuggers for the langs you want
-            -- 'delve',
+            -- Update this to ensure that you have the debuggers for the languages you want
             'debugpy',
+            'codelldb',
          },
       }
 
-      -- Basic debugging keymaps, feel free to change to your liking!
-      vim.keymap.set('n', '<F5>', dap.continue, { desc = 'Debug: Start/Continue' })
-      vim.keymap.set('n', '<F1>', dap.step_into, { desc = 'Debug: Step Into' })
-      vim.keymap.set('n', '<F2>', dap.step_over, { desc = 'Debug: Step Over' })
-      vim.keymap.set('n', '<F3>', dap.step_out, { desc = 'Debug: Step Out' })
-      vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
-      vim.keymap.set('n', '<leader>B', function()
-         dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-      end, { desc = 'Debug: Set Breakpoint' })
+      -- Basic debugging keymaps
+      vim.keymap.set('n', '<F5>', '<cmd>DapContinue<CR>', { desc = 'Debug: Start/Continue', noremap = true, silent = true })
+      vim.keymap.set('n', '<F1>', '<cmd>DapStepInto<CR>', { desc = 'Debug: Step Into', noremap = true, silent = true })
+      vim.keymap.set('n', '<F2>', '<cmd>DapStepInto<CR>', { desc = 'Debug: Step Over', noremap = true, silent = true })
+      vim.keymap.set('n', '<F3>', '<cmd>DapStepOut<CR>', { desc = 'Debug: Step Out', noremap = true, silent = true })
+      vim.keymap.set('n', '<leader>b', '<cmd>DapToggleBreakpoint<CR>', { desc = 'Debug: Toggle Breakpoint', noremap = true, silent = true })
+      -- vim.keymap.set('n', '<leader>B', function()
+      -- dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+      -- end, { desc = 'Debug: Set Breakpoint' })
 
-      -- Dap UI setup
-      -- For more information, see |:help nvim-dap-ui|
+      -- NOTE: Dap UI setup for more information, see |:help nvim-dap-ui|
       dapui.setup {
-         -- Set icons to characters that are more likely to work in every terminal.
-         --    Feel free to remove or use ones that you like more! :)
-         --    Don't feel like these are good choices.
          icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
          controls = {
             icons = {
@@ -71,24 +66,73 @@ return {
       -- Change breakpoint icons
       vim.api.nvim_set_hl(0, 'DapBreak', { fg = '#e51400' })
       vim.api.nvim_set_hl(0, 'DapStop', { fg = '#ffcc00' })
+
       local breakpoint_icons = vim.g.have_nerd_font
-            and { Breakpoint = '', BreakpointCondition = '', BreakpointRejected = '', LogPoint = '', Stopped = '' }
-         or { Breakpoint = '●', BreakpointCondition = '⊜', BreakpointRejected = '⊘', LogPoint = '◆', Stopped = '⭔' }
+            and {
+               Breakpoint = '',
+               BreakpointCondition = '',
+               BreakpointRejected = '',
+               LogPoint = '',
+               Stopped = '',
+            }
+         or {
+            Breakpoint = '●',
+            BreakpointCondition = '⊜',
+            BreakpointRejected = '⊘',
+            LogPoint = '◆',
+            Stopped = '⭔',
+         }
+
       for type, icon in pairs(breakpoint_icons) do
          local tp = 'Dap' .. type
          local hl = (type == 'Stopped') and 'DapStop' or 'DapBreak'
+
          vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
       end
 
-      -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
+      -- Toggle to see last session result. Without this, you can't see session output.
       vim.keymap.set('n', '<F7>', dapui.toggle, { desc = 'Debug: See last session result.' })
 
       dap.listeners.after.event_initialized['dapui_config'] = dapui.open
       dap.listeners.before.event_terminated['dapui_config'] = dapui.close
       dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
-      -- Install golang specific config
-      -- require('dap-go').setup()
+      -- NOTE: Install specific language config for DAP
       require('dap-python').setup 'python3'
+
+      -- NOTE: C compiler and DAP setup
+      dap.adapters.codelldb = {
+         type = 'server',
+         -- host = '127.0.0.1',
+         -- port = 13000,
+         port = '${port}',
+         executable = {
+            command = vim.fn.stdpath 'data' .. '/mason/bin/codelldb',
+            args = { '--port', '${port}' },
+            detached = function()
+               if vim.fn.has 'win32' == 1 then
+                  return false
+               else
+                  return true
+               end
+            end,
+         },
+      }
+      dap.configurations.c = {
+         {
+            name = 'Launch',
+            type = 'codelldb',
+            request = 'launch',
+            program = function() -- Ask the user what executable wants to debug
+               return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/bin/program', 'file')
+            end,
+            cwd = '${workspaceFolder}',
+            stopOnEntry = false,
+            args = {},
+            terminal = 'integrated',
+            -- sourceLanguages = { 'rust' },
+         },
+      }
+      -- require('rustaceanvim').setup({})
    end,
 }
