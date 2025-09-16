@@ -76,6 +76,19 @@ return {
                     luasnip.lsp_expand(args.body)
                 end,
             },
+            -- appearance = {
+            --     menu = {
+            --         direction = 'above', -- auto or above or below
+            --     },
+            -- },
+            -- performance = {
+            --     max_view_entries = 7,
+            -- },
+            view = {
+                docs = {
+                    auto_open = true, -- or false to not show DOCUMENTATION
+                },
+            },
 
             window = {
 
@@ -89,10 +102,7 @@ return {
                     winhighlight = 'Normal:Pmenu,FloatBorder:FloatBorder',
                 },
                 documentation = {
-                    auto_show = true,
-                    auto_show_delay_ms = 200,
                     border = 'rounded',
-                    -- border = { '🭽', '▔', '🭾', '▕', '🭿', '▁', '🭼', '▏' },
                     winhighlight = 'Normal:Pmenu,FloatBorder:FloatBorder',
                 },
             },
@@ -102,7 +112,10 @@ return {
                 native_menu = false,
             },
 
-            completion = { completeopt = 'menu,menuone,noinsert' },
+            completion = {
+                completeopt = 'menu,menuone,noinsert',
+                keyword_length = 3,
+            },
 
             -- For an understanding of why these mappings were
             -- chosen, you will need to read `:help ins-completion`
@@ -132,7 +145,7 @@ return {
                 -- Manually trigger a completion from nvim-cmp.
                 --  Generally you don't need this, because nvim-cmp will display
                 --  completions whenever it has completion options available.
-                ['<C-Space>'] = cmp.mapping.complete {},
+                -- ['<C-Space>'] = cmp.mapping.complete {},
 
                 -- Think of <c-l> as moving to the right of your snippet expansion.
                 --  So if you have a snippet that's like:
@@ -142,16 +155,17 @@ return {
                 --
                 -- <c-l> will move you to the right of each of the expansion locations.
                 -- <c-h> is similar, except moving you backwards.
-                ['<C-l>'] = cmp.mapping(function()
-                    if luasnip.expand_or_locally_jumpable() then
-                        luasnip.expand_or_jump()
-                    end
-                end, { 'i', 's' }),
-                ['<C-h>'] = cmp.mapping(function()
-                    if luasnip.locally_jumpable(-1) then
-                        luasnip.jump(-1)
-                    end
-                end, { 'i', 's' }),
+                -- NOTE: remove C-l and C-h my keymaps in insert mode to move see: keymaps file in config
+                -- ['<C-l>'] = cmp.mapping(function()
+                --     if luasnip.expand_or_locally_jumpable() then
+                --         luasnip.expand_or_jump()
+                --     end
+                -- end, { 'i', 's' }),
+                -- ['<C-h>'] = cmp.mapping(function()
+                --     if luasnip.locally_jumpable(-1) then
+                --         luasnip.jump(-1)
+                --     end
+                -- end, { 'i', 's' }),
 
                 -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
                 --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps

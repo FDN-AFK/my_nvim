@@ -8,19 +8,26 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 -- For conciseness
 local opts = { noremap = true, silent = true }
 
--- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
--- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
--- is not what someone will guess without a bit more experience.
---
--- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
--- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', opts)
 -- to select all text in buffer
 vim.keymap.set('n', '<C-a>', 'gg<S-v>G', opts)
 
 -- Move Text up and down in visual mode
-vim.keymap.set('v', '<C-j>', ':m .+1<CR>==', opts)
-vim.keymap.set('v', '<C-k>', ':m .-2<CR>==', opts)
+vim.api.nvim_set_keymap('x', '<C-j>', ":m '>+1<cr>gv=gv", opts)
+vim.api.nvim_set_keymap('x', '<C-k>', ":m '<-2<cr>gv=gv", opts)
+-- vim.keymap.set('v', '<C-k>', ':m .-2<CR>gv=gv', opts)
+-- vim.keymap.set('v', '<C-j>', ':m .+1<CR>gv=gv', opts)
+
+-- Moving cursor in insert mode
+vim.keymap.set('i', '<C-k>', '<Up>', opts)
+vim.keymap.set('i', '<C-j>', '<Down>', opts)
+vim.keymap.set('i', '<C-h>', '<Left>', opts)
+vim.keymap.set('i', '<C-l>', '<Right>', opts)
+
+-- To disable spellcheck
+vim.keymap.set('n', '<leader>ssd', '<cmd>setlocal nospell<CR>', { desc = '[S]pellcheck [D]isable', noremap = true, silent = true }) -- split window vertically
+vim.keymap.set('n', '<leader>ssu', '<cmd>setlocal spell spelllang=en_us<CR>', { desc = 'Active [S]pellcheck [U]S', noremap = true, silent = true }) -- split window vertically
+vim.keymap.set('n', '<leader>ssf', '<cmd>setlocal spell spelllang=fr_fr<CR>', { desc = 'Active [S]pellcheck [F]R', noremap = true, silent = true }) -- split window vertically
+vim.keymap.set('n', '<leader>sse', '<cmd>setlocal spell spelllang=es_mx<CR>', { desc = 'Active [S]pellcheck [E]S', noremap = true, silent = true }) -- split window vertically
 
 -- save file
 vim.keymap.set('n', '<C-s>', '<cmd> w <CR>', opts)
@@ -28,14 +35,15 @@ vim.keymap.set('n', '<C-s>', '<cmd> w <CR>', opts)
 -- save file in sudo mode
 -- vim.keymap.set('n', '<SC-s>', '<cmd> w !sudo tee % >/dev/null <CR>', opts)
 
--- save file without auto-formatting
--- vim.keymap.set('n', '<leader>sn', '<cmd>noautocmd w <CR>', opts)
-
 -- quit all
 vim.keymap.set('n', '<C-q>', '<cmd> qa <CR>', opts)
 
 -- delete single character without copying into register
 vim.keymap.set('n', 'x', '"_x', opts)
+vim.keymap.set('i', '<C-z>', '<Esc>', opts)
+
+-- create an executable script
+vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', opts)
 
 -- command using regex
 -- vim.keymap.set('n', '<Leader>r', [[:%s/\n/,/g<CR>]], opts)
@@ -61,11 +69,50 @@ vim.keymap.set('n', '<S-Tab>', ':bprevious<CR>', opts)
 vim.keymap.set('n', '<C-w>', '<cmd>bdelete!<CR>', opts) -- close buffer
 vim.keymap.set('n', '<C-n>', '<cmd> enew <CR>', opts) -- new buffer
 
+-- Terminal keymaps
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
+vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { noremap = true, silent = true })
+vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], { noremap = true, silent = true })
+vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], { noremap = true, silent = true })
+vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], { noremap = true, silent = true })
+vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], { noremap = true, silent = true })
+vim.keymap.set('t', '<C-w>', [[<Cmd>exit<CR>]], { noremap = true, silent = true })
+
+-- Terminal Split Window
+vim.keymap.set('n', '<leader>ts', '<cmd>ToggleTerm<CR>', { desc = '[T]oggle [T]erminal', noremap = true, silent = true }) -- split window vertically
+vim.keymap.set(
+    'n',
+    '<leader>tf',
+    '<cmd>ToggleTerm size=40 dir=~/Documents direction=float<CR>',
+    { desc = '[T]erminal [F]loatting', noremap = true, silent = true }
+)
+
+vim.keymap.set(
+    'n',
+    '<leader>th',
+    '<cmd>ToggleTerm size=20 dir=~/Documents direction=horizontal<CR>',
+    { desc = '[T]erminal [H]oritzontally', noremap = true, silent = true }
+)
+
+vim.keymap.set(
+    'n',
+    '<leader>tv',
+    '<cmd>ToggleTerm size=40 dir=~/Documents direction=vertical<CR>',
+    { desc = '[T]erminal [V]ertically', noremap = true, silent = true }
+)
+
+vim.keymap.set(
+    'n',
+    '<leader>tt',
+    '<cmd>ToggleTerm dir=~/Documents direction=tab name=documents<CR>',
+    { desc = '[T]erminal [T]ab', noremap = true, silent = true }
+)
+
 -- Window management
 vim.keymap.set('n', '<leader>v', '<C-w>v', { desc = 'Split Vertically', noremap = true, silent = true }) -- split window vertically
 vim.keymap.set('n', '<leader>h', '<C-w>s', { desc = 'Split Horizontally', noremap = true, silent = true }) -- split window horizontally
 vim.keymap.set('n', '<leader>e', '<C-w>=', { desc = 'Split Resizing Equally', noremap = true, silent = true }) -- make split windows equal width & height
-vim.keymap.set('n', '<C-x>', ':close Neotree; close<CR>', opts) -- close current split window
+vim.keymap.set('n', '<C-x>', ':close<CR>', opts) -- close current split window
 
 -- Navigate between splits
 vim.keymap.set('n', '<C-k>', ':wincmd k<CR>', opts)
@@ -83,9 +130,7 @@ vim.keymap.set('n', '<leader>tp', ':tabp<CR>', { desc = 'Go to previous Tab', no
 vim.keymap.set('n', '<leader>lw', '<cmd>set wrap!<CR>', opts)
 
 -- Stay in indent mode
--- vim.keymap.set('v', '<', '<gv', opts)
 vim.keymap.set('v', '<S-Tab>', '<gv', opts)
--- vim.keymap.set('v', '>', '>gv', opts)
 vim.keymap.set('v', '<Tab>', '>gv', opts)
 
 -- Keep last yanked when pasting

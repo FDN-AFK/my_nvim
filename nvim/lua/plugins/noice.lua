@@ -1,5 +1,7 @@
 return {
     'folke/noice.nvim',
+    -- tag = 'v2.0.3',
+    enabled = true,
     event = 'VeryLazy',
     opts = {
         -- add any options here
@@ -16,6 +18,15 @@ return {
     config = function()
         require('noice').setup {
 
+            -- routes = {
+            --     {
+            --         filter = {
+            --             event = 'notify',
+            --             min_height = 15,
+            --         },
+            --         view = 'split',
+            --     },
+            -- },
             cmdline = {
                 enabled = true, -- enables the Noice cmdline UI
                 view = 'cmdline_popup', -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
@@ -202,7 +213,7 @@ return {
 
             throttle = 1000 / 30, -- how frequently does Noice need to check for ui updates? This has no effect when in blocking mode.
             views = {}, ---@see section on views
-            routes = {}, --- @see section on routes
+            -- routes = {}, --- @see section on routes
             status = {}, --- @see section on statusline components
             format = {
                 -- default format

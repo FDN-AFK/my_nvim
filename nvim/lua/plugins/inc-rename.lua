@@ -7,7 +7,7 @@ return {
             hl_group = 'Substitute',
             preview_empty_name = false,
             show_message = true,
-            -- whether to save the "IncRename" command in the commandline history (set to false to prevent issues with
+            -- whether to save the "IncRename" command in the command line history (set to false to prevent issues with
             -- navigating to older entries that may arise due to the behavior of command preview)
             -- save_in_cmdline_history = true,
             input_buffer_type = 'snacks',
